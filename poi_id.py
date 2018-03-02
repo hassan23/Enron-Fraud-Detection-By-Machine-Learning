@@ -8,7 +8,7 @@ from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
 import matplotlib.pyplot as plt
 
-### Task 1: Select what features you'll use. 
+### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
 features_list = ["salary", "bonus"] # You will need to use more features
@@ -56,8 +56,8 @@ for outlier in ['TOTAL']:
 ### Task 3| Create new feature(s)
 
 def get_ratio(num, denum):
-	if num == 'NaN' or denum == 'NaN': return 0
-	return num/denum
+    if num == 'NaN' or denum == 'NaN': return 0
+    return num/denum
 
 for i in data_dict:
     data_dict[i]["fraction_from_poi_email"]=get_ratio(data_dict[i]["from_poi_to_this_person"], data_dict[i]["to_messages"])
@@ -87,7 +87,7 @@ labels, features = targetFeatureSplit(data)
 #     if point[0] == 1:
 #         plt.scatter(from_poi, to_poi, color="r", marker="*")
 #     else:
-#     	plt.scatter(from_poi, to_poi, color="b")
+#       plt.scatter(from_poi, to_poi, color="b")
 # plt.xlabel("fraction of emails persons gets from poi")
 # plt.show()
  
@@ -97,6 +97,12 @@ features_list = ["poi", "salary", "bonus", "fraction_from_poi_email", "fraction_
                  'deferral_payments', 'total_payments', 'loan_advances', 'restricted_stock_deferred',
                  'deferred_income', 'total_stock_value', 'expenses', 'exercised_stock_options',
                  'long_term_incentive', 'shared_receipt_with_poi', 'restricted_stock', 'director_fees']
+
+# Trying out different subset of features
+# features_list = ["poi", "salary", "bonus", "long_term_incentive"]
+# features_list = ["poi", "deferral_payments", "deferred_income"]
+# features_list = ["poi", "fraction_from_poi_email", "fraction_to_poi_email", "shared_receipt_with_poi"]
+
 data = featureFormat(my_dataset, features_list)
 
 #spliting the data into features and labels where labels is the status of a employee(is it a POI or not) 
@@ -159,7 +165,7 @@ from sklearn.naive_bayes import GaussianNB
 
 ### Using Naive based
 print 'FINDINGS USING NAIVE BAYES'
-t0 = time()	
+t0 = time() 
 clf = GaussianNB()
 clf.fit(features_train, labels_train)
 pred = clf.predict(features_test)
@@ -174,7 +180,7 @@ print "naive bayes algorithm time: %f%s"% (round(time()-t0, 3), "s")
 print '********'
 
 print 'FINDINGS USING DecisionTreeClassifier'
-t0 = time()	
+t0 = time() 
 clf = DecisionTreeClassifier()
 clf.fit(features_train, labels_train)
 pred = clf.predict(features_test)
@@ -190,7 +196,7 @@ print '********'
 
 print 'FINDINGS USING SVM'
 from sklearn import svm
-t0 = time()	
+t0 = time() 
 clf = svm.LinearSVC()
 clf.fit(features_train, labels_train)
 pred = clf.predict(features_test)
@@ -241,48 +247,55 @@ from sklearn.cross_validation import train_test_split
 features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.1, random_state=42)
 
-# function uses Kfold algorithm to split data into traning and test set 
-def KFold_split(labels, split_no = 2):
-	from sklearn.cross_validation import KFold
-	kf=KFold(len(labels),split_no)
-	for train_indices, test_indices in kf:
-	    features_train= [features[ii] for ii in train_indices]
-	    features_test= [features[ii] for ii in test_indices]
-	    labels_train=[labels[ii] for ii in train_indices]
-	    labels_test=[labels[ii] for ii in test_indices]
+def average(array):
+    return sum(array)/len(array)
 
-	return features_train, features_test, labels_train, labels_test
+# function uses Kfold algorithm to split data into traning and test set 
+def KFold_split(labels, clf, split_no = 2):
+    from sklearn.cross_validation import KFold
+    kf=KFold(len(labels),split_no)
+    accuracy_list = []
+    precision_list = []
+    recall_list = []
+    for train_indices, test_indices in kf:
+        features_train= [features[ii] for ii in train_indices]
+        features_test= [features[ii] for ii in test_indices]
+        labels_train=[labels[ii] for ii in train_indices]
+        labels_test=[labels[ii] for ii in test_indices]
+        clf.fit(features_train,labels_train)
+        pred = clf.predict(features_test)
+        accuracy = accuracy_score(pred,labels_test)
+        precision = precision_score(labels_test,pred)
+        recall = recall_score(labels_test,pred)
+        accuracy_list.append(accuracy)
+        precision_list.append(precision)
+        recall_list.append(recall)
+    return average(accuracy_list), average(precision_list),average(recall_list)
 
 #splitting data using kfold
-features_train, features_test, labels_train, labels_test = KFold_split(labels,3)
-
+# features_train, features_test, labels_train, labels_test = KFold_split(labels,3)
+# features_train1, features_test1, labels_train1, labels_test1 = KFold_split(labels,3)
+# print features_train,"Hello",features_train1
 ### checking Decision tree with various minimum_split using kfold algorith
 print 'DECISION TREE ON VARIOUS SPLITS USING KFOLD'
 print "SPLIT\tACCURACY\tPRECISION\tRECALL\tTIME"
 for i in range (2,10): 
     t0 = time()
     clf = DecisionTreeClassifier(min_samples_split=i)
-    clf.fit(features_train,labels_train)
-    pred = clf.predict(features_test)
-    accuracy = accuracy_score(pred,labels_test)
-    precision = precision_score(labels_test,pred)
-    recall = recall_score(labels_test,pred)
-    print "%d\t%0.4f\t\t%0.4f\t\t%0.4f\t%0.4f" % (i,accuracy,precision,recall,time()-t0)
+    accuracy, precesion, recall = KFold_split(labels, clf, 3)
+    print "%d\t%0.4f\t\t%0.4f\t\t%0.4f\t%0.4f" % (i, accuracy, precesion, recall,time()-t0)
 print '********'
 
 print 'FINAL RESULT AFTER ALL THE TUNING'
 ### use manual tuning with best parameters
 t0 = time()
 clf = DecisionTreeClassifier(min_samples_split=5)
-clf = clf.fit(features_train,labels_train)
-pred= clf.predict(features_test)
+accuracy, precesion, recall = KFold_split(labels, clf, 3)
 print "done in %0.3fs" % (time() - t0)
 
-acc=accuracy_score(labels_test, pred)
-
-print "accuracy after tuning = %f"% acc
-print 'precision = %lf'% precision_score(labels_test,pred)
-print 'recall = %lf'% recall_score(labels_test,pred)
+print "accuracy after tuning = %f"% accuracy
+print 'precision = %lf'% precesion
+print 'recall = %lf'% recall
 
 
 ### dump your classifier, dataset and features_list so

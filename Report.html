@@ -11986,11 +11986,46 @@ alt="IMAGE ALT TEXT HERE" width="400" height="400" border="10" /></p>
 </tr>
 </tbody>
 </table>
-<h5 id="Approximate-values">Approximate values<a class="anchor-link" href="#Approximate-values">&#182;</a></h5><p><strong> Accuracy Score: </strong> 0.66</p>
+<p>We can see from above chart that the importance of our new features <strong>fraction_from_poi_email, fraction_to_poi_email</strong> have higher importance than almost all predefined features with the exception of <strong>bonus</strong> and <strong>salary</strong>.</p>
+<h5 id="Approximate-values">Approximate values<a class="anchor-link" href="#Approximate-values">&#182;</a></h5><p>We have tried our classifier on all the features the result turned out to be the following</p>
+<p><strong> Accuracy Score: </strong> 0.66</p>
 <p><strong> Precesion: </strong> 0.25</p>
 <p><strong> Recall: </strong> 0.25</p>
 <p>As we see above our <strong>accuracy</strong> is fine(not good) as compared to <strong>precision</strong> and <strong>recall</strong> but accuracy alone can't be a good factor for evaluation of algorithm as our precession and recall is much lower than it should be. Also most of the <strong>POIs</strong> are missing from the data so we can't use accuracy as the sole property to analyse the classifier. We need to manually pick fewer features as including all of them turned out to be a bad decision.</p>
-<h5 id="Final-Features-picked">Final Features picked<a class="anchor-link" href="#Final-Features-picked">&#182;</a></h5><p>Following are the features which is been choosen.</p>
+<p>We have tried certain subset of features. High importance feature are taken in the subset along with some features which signifies similar attribute.</p>
+<ul>
+<li><p><strong>salary, bonus, long_term_incentive</strong></p>
+<ul>
+<li><p><strong> Accuracy Score: </strong> 0.70</p>
+</li>
+<li><p><strong> Precesion: </strong> 0.00</p>
+</li>
+<li><p><strong> Recall: </strong> 0.00</p>
+</li>
+</ul>
+</li>
+<li><p><strong> fraction_from_poi_email, fraction_to_poi_email, shared_receipt_with_poi</strong></p>
+<ul>
+<li><p><strong> Accuracy Score: </strong> 0.77</p>
+</li>
+<li><p><strong> Precesion: </strong> 0.50</p>
+</li>
+<li><p><strong> Recall: </strong> 0.50</p>
+</li>
+</ul>
+</li>
+<li><p><strong> deferral_payments, deferred_income, expenses</strong></p>
+<ul>
+<li><p><strong> Accuracy Score: </strong> 0.75</p>
+</li>
+<li><p><strong> Precesion: </strong> 0.00</p>
+</li>
+<li><p><strong> Recall: </strong> 0.00</p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="Final-Features-picked">Final Features picked<a class="anchor-link" href="#Final-Features-picked">&#182;</a></h5><p>Following are the features which is been choosen based on the above result.</p>
 <ul>
 <li>POI</li>
 <li>fraction_from_poi_email</li>
@@ -12030,7 +12065,7 @@ alt="IMAGE ALT TEXT HERE" width="400" height="400" border="10" /></p>
 <td>0.5</td>
 </tr>
 <tr>
-<td>Support Vector Machine (SVM)</td>
+<td>Support Vector Machine (SVM)-LinearSVC</td>
 <td>0.467</td>
 <td>0.1666</td>
 <td>0.25</td>
@@ -12038,8 +12073,10 @@ alt="IMAGE ALT TEXT HERE" width="400" height="400" border="10" /></p>
 </tbody>
 </table>
 <p>From the above table we can see that <strong>Decision tree classification algorithm</strong> is by far have the better <strong>accuracy, precision and recall</strong>. So we are going to stick with the <strong>Decision Tree Classification Algorithm.</strong></p>
+<p>Since we are moving ahead with <strong>Decision Tree Classification Algorithm</strong>, We are not doing any <strong>feature scaling</strong>. Feature scaling won't effect the outcome of decision tree.</p>
 <hr>
-<h2 id="Tuning-the-Data-and-Algorithm">Tuning the Data and Algorithm<a class="anchor-link" href="#Tuning-the-Data-and-Algorithm">&#182;</a></h2><h3 id="Evaluation-on-various-Split">Evaluation on various Split<a class="anchor-link" href="#Evaluation-on-various-Split">&#182;</a></h3><p>We are now going to see the evaluation matrix of decision tree classification algorithm based on min sample split.</p>
+<h2 id="Tuning-the-Data-and-Algorithm">Tuning the Data and Algorithm<a class="anchor-link" href="#Tuning-the-Data-and-Algorithm">&#182;</a></h2><p>Tuning an algorithms is a crucial part of machine learning. It is vital to <strong>improve performance</strong> as the attributes for a given method help to refine how that algorithm is processed. The tunable parameters of the classifier help us to improve the  performance(accuracy, recall, precision etc).</p>
+<h3 id="Evaluation-on-various-Split">Evaluation on various Split<a class="anchor-link" href="#Evaluation-on-various-Split">&#182;</a></h3><p>We are now going to see the evaluation matrix of decision tree classification algorithm based on min sample split.</p>
 <table>
 <thead><tr>
 <th>SPLIT</th>
@@ -12109,7 +12146,8 @@ alt="IMAGE ALT TEXT HERE" width="400" height="400" border="10" /></p>
 </tbody>
 </table>
 <p>As we can see from above table min_sample_split for better score, precision and recall is  4 and 5.</p>
-<h3 id="Resplitting-the-Data-using-KFold">Resplitting the Data using KFold<a class="anchor-link" href="#Resplitting-the-Data-using-KFold">&#182;</a></h3><p>Here is the real Machine learning techniques is been applied. We used the <strong>KFold</strong> algorithm to split the data into test and training set so that out score, precision and recall might increase.</p>
+<h2 id="Validation">Validation<a class="anchor-link" href="#Validation">&#182;</a></h2><p>Validation is also an important or we can say a must step in the machine learning process, It gives an estimate <strong>performance</strong> on <strong>independent datasets</strong> which is important because if we keep applying our classifier on the same data over and over again, we might get a perfect score but would fail to predict any thing on any new data set. So Validation is used to detect <strong>overfitting.</strong></p>
+<h3 id="Resplitting-the-Data-using-KFold">Resplitting the Data using KFold<a class="anchor-link" href="#Resplitting-the-Data-using-KFold">&#182;</a></h3><p>Here is the real Machine learning techniques is been applied. We used the <strong>KFold</strong> algorithm to split the data into test and training set so that out score, precision and recall might increase. Also for small data <strong>KFold</strong> seems a better choice.</p>
 <p>Below is the table representing the evaluation matrix of decision tree classified at various splits, but this time we are using the Kfold algorithm to split the data.</p>
 <table>
 <thead><tr>
@@ -12123,70 +12161,70 @@ alt="IMAGE ALT TEXT HERE" width="400" height="400" border="10" /></p>
 <tbody>
 <tr>
 <td>2</td>
-<td>0.8571</td>
-<td>0.4000</td>
-<td>0.6667</td>
-<td>0.0020</td>
+<td>0.8259</td>
+<td>0.4667</td>
+<td>0.4861</td>
+<td>0.0160</td>
 </tr>
 <tr>
 <td>3</td>
-<td>0.8929</td>
+<td>0.8378</td>
 <td>0.5000</td>
-<td>0.6667</td>
-<td>0.0030</td>
+<td>0.4861</td>
+<td>0.0000</td>
 </tr>
 <tr>
 <td>4</td>
-<td>0.8929</td>
-<td>0.5000</td>
-<td>0.6667</td>
-<td>0.0030</td>
+<td>0.8259</td>
+<td>0.4667</td>
+<td>0.4861</td>
+<td>0.0150</td>
 </tr>
 <tr>
 <td>5</td>
-<td>0.9286</td>
-<td>0.6667</td>
-<td>0.6667</td>
-<td>0.0020</td>
+<td>0.8498</td>
+<td>0.5556</td>
+<td>0.4861</td>
+<td>0.0000</td>
 </tr>
 <tr>
 <td>6</td>
-<td>0.9286</td>
-<td>0.6667</td>
-<td>0.6667</td>
-<td>0.0030</td>
+<td>0.8498</td>
+<td>0.5556</td>
+<td>0.4861</td>
+<td>0.0160</td>
 </tr>
 <tr>
 <td>7</td>
-<td>0.9286</td>
-<td>0.6667</td>
-<td>0.6667</td>
-<td>0.0020</td>
+<td>0.8378</td>
+<td>0.5000</td>
+<td>0.4861</td>
+<td>0.0000</td>
 </tr>
 <tr>
 <td>8</td>
-<td>0.9286</td>
-<td>0.6667</td>
-<td>0.6667</td>
-<td>0.0020</td>
+<td>0.8498</td>
+<td>0.5556</td>
+<td>0.4861</td>
+<td>0.0160</td>
 </tr>
 <tr>
 <td>9</td>
-<td>0.9286</td>
-<td>0.6667</td>
-<td>0.6667</td>
-<td>0.0020</td>
+<td>0.8498</td>
+<td>0.5556</td>
+<td>0.4861</td>
+<td>0.0000</td>
 </tr>
 </tbody>
 </table>
-<p>It is evident from the above table we can say that accuracy, precision and recall is been improved when we use <strong>KFold</strong> instead of <strong>StratifiedShuffleSplit</strong>. Our accuracy is improved from 0.67 to 0.92, Precision from 0.32 to 0.67 and recall from 0.25 to 0.67.</p>
+<p>It is evident from the above table that Our accuracy is improved from 0.67 to 0.84, Precision from 0.32 to 0.55 and recall from 0.25 to 0.48.</p>
 <h2 id="Final-Result">Final Result<a class="anchor-link" href="#Final-Result">&#182;</a></h2><h5 id="Before-the-tuning">Before the tuning<a class="anchor-link" href="#Before-the-tuning">&#182;</a></h5><p><strong> Accuracy Score: </strong> 0.66</p>
 <p><strong> Precesion: </strong> 0.25</p>
 <p><strong> Recall: </strong> 0.25</p>
-<h5 id="After-the-tuning">After the tuning<a class="anchor-link" href="#After-the-tuning">&#182;</a></h5><p><strong> Accuracy Score: </strong> 0.9286</p>
-<p><strong> Precesion: </strong> 0.667</p>
-<p><strong> Recall: </strong> 0.667</p>
-<p>The result simply means that (precision) 67% of the times classifier is successfully able to detect the POI and 33 percent of times it raise a false flag. And also (recall) 67% of the times classifier is successfully able to detect a POI if the given employee is POI.</p>
+<h5 id="After-the-tuning">After the tuning<a class="anchor-link" href="#After-the-tuning">&#182;</a></h5><p><strong> Accuracy Score: </strong> 0.84</p>
+<p><strong> Precesion: </strong> 0.556</p>
+<p><strong> Recall: </strong> 0.486</p>
+<p>The result simply means that (precision) 56% of the times classifier is successfully able to detect the POI and 44% of times it raise a false flag. And also (recall) 49% of the times classifier is successfully able to detect a POI if the given employee is POI.</p>
 <hr>
 <h2 id="Conclusion-and-my-insight-for-future">Conclusion and my insight for future<a class="anchor-link" href="#Conclusion-and-my-insight-for-future">&#182;</a></h2><p>I think the 'to' and 'from' email_feature are the most helpfull feature in making this classifier successfull. However more sophisticated feature can be built to make our case much stronger in identifying the fraud.</p>
 <p>New features could be made using <strong>Expences</strong>, <strong>Deferred Income</strong> and <strong>Loan Advances</strong> because POIs must knew where the company is going so they must try to get more out of the company as fast as possible in the form of Expences, Loans etc.</p>
